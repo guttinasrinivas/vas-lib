@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include <string>
+#include <format>
 
 
 struct CLI_Arg;
@@ -74,7 +75,38 @@ public:
     str_p help_str(void)
     {
         std::stringstream ss;
-        ss << *name_ << ": " << *help_str_ << std::endl;
+        ss << *name_;
+        int pad = (name_->size() >= 20) ? 0 : 20 - name_->size();
+        for (int ii = 0; ii < pad; ii++)
+        {
+           ss << ' ';
+        }
+        
+        switch (type_)
+        {
+            case ArgString:
+                ss << "STRING";
+                break;
+
+            case ArgInt:
+                ss << "INT   ";
+                break;
+
+            case ArgDouble:
+                ss << "DOUBLE";
+                break;
+
+            case ArgFlag:
+                ss << "FLAG  ";
+                break;
+
+            default:
+                break;
+        }
+
+        ss << ": ";
+
+        ss << *help_str_ << std::endl;
         return std::make_shared<std::string>(ss.str());
     }
 
@@ -144,7 +176,16 @@ public:
     CLI_Args(int ac, char **av): ac_(ac), av_(av) {}
     virtual ~CLI_Args() {}
 
-    std::vector<str_p>& get_args(void) { return n_args_; }
+    str_p get_args(void)
+    {
+        std::stringstream ss;
+        for (auto arg: n_args_)
+        {
+            ss << *arg << ", ";
+        }
+
+        return std::make_shared<std::string>(ss.str());
+    }
 
     auto add_flag(const char* name)
     {
@@ -282,7 +323,7 @@ public:
         }
         
         val_len -= val_ofst;
-        auto inval = inarg.substr(val_ofst+1, inarg.size());
+        auto inval = inarg.substr(val_ofst+1, val_len);
         parser->parse(inval);
     }
 

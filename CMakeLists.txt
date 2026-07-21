@@ -23,6 +23,9 @@ target_include_directories(c_queue_impl PRIVATE src inc)
 add_library(wl_impl STATIC src/word_list.c)
 target_include_directories(wl_impl PRIVATE src inc)
 
+add_library(simple_logger STATIC src/SimpleLogger.cpp)
+target_include_directories(simple_logger PRIVATE src inc)
+
 add_executable(cli_args_test tests/cli_args_test.cpp)
 target_link_options(cli_args_test PRIVATE -static)
 target_include_directories(cli_args_test PRIVATE src inc)
@@ -30,7 +33,7 @@ target_include_directories(cli_args_test PRIVATE src inc)
 # Add the executable target (assumes your source code file is named main.cpp)
 #add_executable(c_queue_impl src/SimpleLogger.cpp src/thread_test.cpp)
 
-foreach (PROJ_NAME IN ITEMS c_queue_impl wl_impl)
+foreach (PROJ_NAME IN ITEMS c_queue_impl wl_impl simple_logger)
     target_include_directories(${PROJ_NAME} PUBLIC inc)
 
     # Enable aggressive compiler warnings to keep the code tight and clean

@@ -39,10 +39,7 @@ int main(int ac, char *av[])
         cout << endl << "in_format: " << *in_format;
         cout << endl << "in_val: " << *in_inval;
         cout << endl << "unnamed args: ";
-        for (auto inarg: ap.get_args())
-        {
-            cout << *inarg << ", ";
-        }
+        cout << endl << *ap.get_args();
 
         cout << endl << ">-------- Parsed CLI Args --------<\n";
     }
