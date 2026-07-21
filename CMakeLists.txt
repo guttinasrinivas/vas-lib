@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_BUILD_TYPE Debug)
 
 
 project(vas-lib VERSION 1.0.0 LANGUAGES C CXX)
@@ -16,7 +18,14 @@ find_package(Threads REQUIRED)
 
 # Add library target
 add_library(c_queue_impl STATIC src/queue_impl.c)
+target_include_directories(c_queue_impl PRIVATE src inc)
+
 add_library(wl_impl STATIC src/word_list.c)
+target_include_directories(wl_impl PRIVATE src inc)
+
+add_executable(cli_args_test tests/cli_args_test.cpp)
+target_link_options(cli_args_test PRIVATE -static)
+target_include_directories(cli_args_test PRIVATE src inc)
 
 # Add the executable target (assumes your source code file is named main.cpp)
 #add_executable(c_queue_impl src/SimpleLogger.cpp src/thread_test.cpp)
