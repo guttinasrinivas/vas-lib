@@ -9,6 +9,8 @@ typedef struct q_node_s
 {
     struct q_node_s *next;
     struct q_node_s *prev;
+    struct q_node_s *parent;
+    struct q_node_s *children;
     void *q;
     void *data;
 } q_node_t;
@@ -18,6 +20,7 @@ typedef struct q_s
     struct q_node_s *head;
     struct q_node_s *tail;
     int len;
+    int debug;
 } q_t;
 
 int q_init_node(q_node_t **n, void *data);

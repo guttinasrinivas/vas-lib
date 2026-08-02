@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 
 #include "generics.h"
-#include "queue_impl.h"
+//#include "queue_impl.h"
 #include "word_list.h"
 
 /*
@@ -25,12 +25,12 @@ int wl_read_list(word_list_t *wl)
     int tw = 0;
     
     ret = wl_map_file(wl);
-    RET_ON_ERR(ret);
+    ReturnOnError(ret);
     words = wl->map;
     
     /* Split the buffer into words */
     tw = 0;
-    for (ii = 0; ii < wl->flen; ii++)
+    for (ii = 0; ii < (int) wl->flen; ii++)
     {
         if (words[ii] == '\n')
         {
@@ -39,13 +39,13 @@ int wl_read_list(word_list_t *wl)
         }
     }
     wl->n_words = tw;
-    LOG_PRINTF(INFO, "Found %d words in dictionary %s.\n", tw, wl->fname);
+    LOG_Printf(INFO, "Found %d words in dictionary %s.\n", tw, wl->fname);
     wl->words = (char **)malloc(sizeof(char *) * tw);
     
     /* Split the words into array of strings */
     tw = 1;
     wl->words[0] = words;
-    for (ii = 0; ii < (wl->flen - 1); ii++)
+    for (ii = 0; ii < (int) (wl->flen - 1); ii++)
     {
         if (words[ii] == '\0')
         {
@@ -63,17 +63,18 @@ int wl_map_file(word_list_t *wl)
     int ret = 0;
     struct stat sb;
     
+    LOG_Printf(INFO, "Attempting to open dictionary file %s...", wl->fname);
     wl->fd = open(wl->fname, O_RDONLY);
     if (wl->fd <= 0)
     {
-        EPRINTF("Could not open dictionary %s: error %d.\n", wl->fname, errno);
+        E_Printf("Could not open dictionary %s: error %d.\n", wl->fname, errno);
         return(errno);
     }
     
     ret = fstat(wl->fd, &sb);
     if (ret != 0)
     {
-        EPRINTF("%s: Access error.\n", wl->fname);
+        E_Printf("%s: Access error.\n", wl->fname);
         return(errno);
     }
     
@@ -83,12 +84,13 @@ int wl_map_file(word_list_t *wl)
                          MAP_FILE|MAP_PRIVATE, wl->fd, 0);
     if (wl->map == MAP_FAILED)
     {
-        EPRINTF("Could not access dictionary file.\n");
+        E_Printf("Could not access dictionary file.\n");
         return(ENOMEM);
     }
     
     return(ret);
 }
+
 
 int wl_cleanup(word_list_t *wl)
 {
@@ -107,13 +109,18 @@ int wl_cleanup(word_list_t *wl)
 /* TODO Find a better look up algorithm.
  * Maybe, hash table???
  */
-int wl_lookup(const word_list_t *wl, const char *word, int *pos)
+int wl_lookup(const word_list_t *wl, const char *word, int *pos, uint8_t *valid_bm)
 {
     int ret = SUCCESS;
     int ii =0;
     
     for(ii = 0; ii < wl->n_words; ii++)
     {
+        if (bit_val_at(valid_bm, ii) == 0)
+        {
+            continue;
+        }
+
         if (strcasecmp(word, wl->words[ii]) == 0)
         {
             //printf("Debug: %s == %s\n", word, wl->words[ii]);
