@@ -15,22 +15,20 @@ int q_init(q_t *q)
     q->tail = NULL;
     q->len = 0;
     q->debug = 0;
-    
-    return(ret);
+
+    return (ret);
 }
 
-int q_append(q_t *q, q_node_t *node)
+int q_append(q_t *q, q_node_t* node)
 {
-    q_node_t *head = q->head;
-    
+    q_node_t* head = q->head;
+
     if ((q == NULL) ||
-        (node == NULL))
-    {
+            (node == NULL)) {
         return ENOTSUP;
     }
-    
-    if (head == NULL)
-    {
+
+    if (head == NULL) {
         node->next = NULL;
         node->prev = NULL;
         node->q = (void*) q;
@@ -39,143 +37,132 @@ int q_append(q_t *q, q_node_t *node)
         q->len = 1;
         return SUCCESS;
     }
-    
+
     node->next = NULL;
     node->prev = q->tail;
     node->q = (void*) q;
     q->tail->next = node;
     q->tail = node;
     q->len++;
-    
+
     return (SUCCESS);
 }
 
-int q_insert(q_t *q, q_node_t *at, q_node_t *node)
+int q_insert(q_t *q, q_node_t* at, q_node_t* node)
 {
-    q_node_t *next = NULL;
-    
+    q_node_t* next = NULL;
+
     if ((q == NULL) ||
-        (at == NULL) ||
-        (node == NULL))
-    {
+            (at == NULL) ||
+            (node == NULL)) {
         return ENOTSUP;
     }
-    
+
     next = at->next;
-    if (next != NULL)
-    {
+    if (next != NULL) {
         next->prev = node;
     }
     node->next = next;
-    
+
     at->next = node;
     node->prev = at;
-    node->q = (void *) q;
+    node->q = (void*) q;
     q->len++;
-    
-    return(SUCCESS);
+
+    return (SUCCESS);
 }
 
-int q_delete(q_t *q, q_node_t *node)
+int q_delete(q_t *q, q_node_t* node)
 {
-    q_node_t *prev = NULL;
-    q_node_t *next = NULL;
-    
+    q_node_t* prev = NULL;
+    q_node_t* next = NULL;
+
     if ((q == NULL) ||
-        (node == NULL))
-    {
-        return(ENOENT);
+            (node == NULL)) {
+        return (ENOENT);
     }
-    
+
     prev = node->prev;
     next = node->next;
-    
-    if (prev != NULL)
-    {
+
+    if (prev != NULL) {
         prev->next = next;
     }
-    
-    if (next != NULL)
-    {
+
+    if (next != NULL) {
         next->prev = prev;
     }
     q->len--;
 
     /* TODO Clean up head and tail */
-    
-    return(SUCCESS);
+
+    return (SUCCESS);
 }
 
-int q_fifo_in(q_t *q, q_node_t *node)
+int q_fifo_in(q_t *q, q_node_t* node)
 {
     int ret = SUCCESS;
-    q_node_t *tail;
-    
+    q_node_t* tail;
+
     q_debug_print(q);
     if ((q == NULL) ||
-        (node == NULL))
-    {
-        return(ENOENT);
+            (node == NULL)) {
+        return (ENOENT);
     }
-    
+
     tail = q->tail;
-    
+
     node->next = NULL;
     node->prev = tail;
-    node->q = (void *) q;
+    node->q = (void*) q;
 
-    if (q->head == NULL)
-    {
+    if (q->head == NULL) {
         q->head = node;
     }
-    
-    if(tail != NULL)
-    {
+
+    if (tail != NULL) {
         tail->next = node;
     }
-    
+
     q->tail = node;
     q->len++;
-    
-    return(ret);
+
+    return (ret);
 }
 
-int q_fifo_out(q_t *q, q_node_t **node)
+int q_fifo_out(q_t *q, q_node_t** node)
 {
     int ret = SUCCESS;
     *node = NULL;
-    
+
     q_debug_print(q);
-    if (q == NULL)
-    {
-        return(ENOENT);
+    if (q == NULL) {
+        return (ENOENT);
     }
-    
+
     if ((q->head == NULL) ||
-        (q->len == 0))
-    {
-        return(ENOENT);
+            (q->len == 0)) {
+        return (ENOENT);
     }
-    
+
     *node = q->head;
     q->head = (*node)->next;
     q->len--;
     (*node)->prev = NULL;
     (*node)->q = NULL;
-    
+
     if ((q->head == NULL) ||
-        (q->len == 0))
-    {
+            (q->len == 0)) {
         q->tail = NULL;
     }
-    
-    return(ret);
+
+    return (ret);
 }
 
-int q_init_node(q_node_t **n, void* data)
+int q_init_node(q_node_t** n, void* data)
 {
     int ret = SUCCESS;
-    
+
     /* XXX Check malloc return. */
     *n = malloc(sizeof(q_node_t));
     (*n)->data = data;
@@ -183,59 +170,54 @@ int q_init_node(q_node_t **n, void* data)
     (*n)->next = NULL;
     (*n)->parent = NULL;
     (*n)->children = NULL;
-    
-    return(ret);
+
+    return (ret);
 }
 
-int q_free_node(q_node_t **n)
+int q_free_node(q_node_t** n)
 {
     int ret = SUCCESS;
-    
-    if ((*n)->data != NULL)
-    {
+
+    if ((*n)->data != NULL) {
         free((*n)->data);
     }
-    
+
     free(*n);
     *n = NULL;
-    
-    return(ret);
+
+    return (ret);
 }
 
 static void q_debug_print(q_t *q)
 {
     int ii = 0;
-    q_node_t *node = NULL;
+    q_node_t* node = NULL;
 
-    if (q->debug == 0)
-    {
+    if (q->debug == 0) {
         return;
     }
 
-    LOG_Printf(INFO, "Queue of %d nodes at 0x%08lx: ", q->len, ((long) q));
-    
-    if (q == NULL)
-    {
-        LOG_Printf(INFO, "\n");
+    printf("Queue of %d nodes at 0x%08lx: ", q->len, ((long) q));
+
+    if (q == NULL) {
+        printf("Empty Queue!\n");
         return;
     }
-    
+
     node = q->head;
-    for (ii = 0; ii < q->len; ii++)
-    {
-        LOG_Printf(INFO, "<- (%d) [ p: 0x%08lx, q: 0x%08lx, d: 0x%08lx, n: 0x%08lx ] -> ",
-                    ii,
-                    (long) node->prev,
-                    (long) node->q,
-                    (long) node->data,
-                    (long) node->next);
-        if (node->next == NULL)
-        {
+    for (ii = 0; ii < q->len; ii++) {
+        printf("<- (%d) [ p: 0x%08lx, q: 0x%08lx, d: 0x%08lx, n: 0x%08lx ] -> ",
+               ii,
+               (long) node->prev,
+               (long) node->q,
+               (long) node->data,
+               (long) node->next);
+        if (node->next == NULL) {
             break;
         }
         node = node->next;
     }
-    
-    LOG_Printf(INFO, "\n");
+
+    printf("\n");
     return;
 }

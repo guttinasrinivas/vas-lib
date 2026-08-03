@@ -1,8 +1,6 @@
 #ifndef __GENERICS_H__
 #define __GENERICS_H__
 #include <stdint.h>
-#include <stdio.h>
-#include <time.h>
 
 
 #ifdef __cplusplus
@@ -11,21 +9,6 @@ extern "C" {
 
 /* Constants */
 #define SUCCESS (0)
-
-/* LOGGING STUFF */
-/* LOG LEVELS */
-#define CRITICAL    (1)
-#define ERROR       (2)
-#define WARNING     (3)
-#define INFO        (4)
-#define DEBUG       (5)
-
-
-#define LOG_Printf(lvl, ...)    if (lvl <= LOG_CurrLevel) print_time(); \
-    printf("- %s %s - ", __FILE_NAME__, __func__); \
-    printf(__VA_ARGS__); printf("\n")
-#define E_Printf(...)            LOG_Printf(ERROR, __VA_ARGS__)
-
 
 /* Macros */
 #define ReturnOnError(ret)             if (ret != SUCCESS) return(ret);
@@ -37,16 +20,14 @@ if (ret != SUCCESS) \
 }
 
 
-typedef struct RefCtr_s
-{
+typedef struct RefCtr_s {
     uint32_t marker;
     int ct;
 } RefCtr_t;
 #define RefCtd  RefCtr_t ref
 
 
-typedef struct RefCtdObj_s
-{
+typedef struct RefCtdObj_s {
     RefCtd;
 } RefCtdObj_t;
 
@@ -67,30 +48,11 @@ typedef struct RefCtdObj_s
     invar->ref.ct++;
 
 
-static void print_time(void)
-{
-    time_t now = time(NULL);         // Get current time
-    struct tm *t = localtime(&now);  // Convert to local time structure
-
-    printf("%04d-%02d-%02d_%02d:%02d:%02d: ",
-            t->tm_year + 1900,
-            t->tm_mon + 1,
-            t->tm_mday,
-            t->tm_hour,
-            t->tm_min,
-            t->tm_sec);
-
-    return;
-}
-
-
-extern int LOG_CurrLevel;
-
-
 void cleanup_and_exit(int errcode);
 
 
-static inline __attribute__((always_inline)) int bit_val_at(uint8_t *bm, int bitnum)
+static inline __attribute__((always_inline)) int bit_val_at(uint8_t* bm,
+        int bitnum)
 {
     uint8_t bitmask = (1 << (bitnum & 0x07));
     return (bm[bitnum >> 3] & bitmask);

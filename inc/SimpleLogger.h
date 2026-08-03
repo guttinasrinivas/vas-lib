@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string>
 #include <memory>
+#include <thread>
+#include <mutex>
 
 
 #define CRITICAL    (0)
@@ -20,7 +22,9 @@ static const std::string default_log_fname = "output.log";
 class SimpleLogger
 {
     public:
-        SimpleLogger(const std::string& logfname=default_log_fname, int loglevel=SimpleLogger::Debug);
+        SimpleLogger(const std::string& logfname = default_log_fname,
+                     int loglevel = SimpleLogger::Debug,
+                     bool log_to_consle = false);
 
         SimpleLogger(const SimpleLogger&) = delete;
         SimpleLogger(SimpleLogger&&) = delete;
@@ -29,23 +33,54 @@ class SimpleLogger
 
         virtual ~SimpleLogger(void);
         void log(int level, std::string &logstr);
-        void log(int level, const char *logstr);
+        void log(int level, const char* logstr);
 
     public:
-        static auto getLogger(const std::string& logfname=default_log_fname, int loglevel=SimpleLogger::Debug)
+        static auto getLogger(const std::string& logfname = default_log_fname,
+                              int loglevel = SimpleLogger::Debug)
         {
             static auto logger_ = std::make_shared<SimpleLogger>(logfname, loglevel);
 
             return logger_;
         }
 
-        auto getLevel(void) { return level; }
-        void setLevel(int inlevel) { level = inlevel; }
+        auto getLevel(void)
+        {
+            return level;
+        }
+        void setLevel(int inlevel)
+        {
+            level = inlevel;
+        }
+
+
+        bool isConsoleLogEnabled(void)
+        {
+            return console_en_;
+        }
+        void enableConsoleLogging(void)
+        {
+            setConsoleEn(true);
+        }
+        void disableConsoleLogging(void)
+        {
+            setConsoleEn(false);
+        }
+        auto getConsoleEn(void)
+        {
+            return console_en_;
+        }
+        void setConsoleEn(bool en)
+        {
+            /* TODO Use config_lock_ and signal a CV to force
+             * writer threads to reload config */
+            console_en_ = en;
+        }
+
 
     public:
         static const int SBUF_LENGTH = 4096;
-        enum
-        {
+        enum {
             Critical = 0,
             Error = 1,
             Warning = 2,
@@ -60,7 +95,13 @@ class SimpleLogger
     protected:
         int level;
         const std::string fname_;
-        FILE *log_fp_;
+        FILE* log_fp_;
+        bool console_en_;
+        std::mutex config_lock_;
+        std::mutex write_lock_;
+        std::mutex console_lock_;
+        std::thread file_writer_;
+        std::thread console_writer_;
 
     protected:
         static std::shared_ptr<SimpleLogger> logger_;

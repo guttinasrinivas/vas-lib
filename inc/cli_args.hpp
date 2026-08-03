@@ -191,33 +191,33 @@ namespace ArgParser
             }
 
             auto add_str(const char* sh_opt = "", const char* lg_opt = "",
-                         const char* descr = "")
+                         const char* descr = "", const char* defval = "")
             {
-                auto arg = TO_StrSP("");
+                auto arg = TO_StrSP(defval);
                 add_arg(arg, sh_opt, lg_opt, descr);
                 return arg;
             }
 
             auto add_int(const char* sh_opt = "", const char* lg_opt = "",
-                         const char* descr = "")
+                         const char* descr = "", int defval = 0)
             {
-                auto arg = std::make_shared<int>(0);
+                auto arg = std::make_shared<int>(defval);
                 add_arg(arg, sh_opt, lg_opt, descr);
                 return arg;
             }
 
             auto add_double(const char* sh_opt = "", const char* lg_opt = "",
-                            const char* descr = "")
+                            const char* descr = "", double defval = 0.0)
             {
-                auto arg = std::make_shared<double>(0);
+                auto arg = std::make_shared<double>(defval);
                 add_arg(arg, sh_opt, lg_opt, descr);
                 return arg;
             }
 
             auto add_flag(const char* sh_opt = "", const char* lg_opt = "",
-                          const char* descr = "")
+                          const char* descr = "", bool defval = false)
             {
-                auto arg = std::make_shared<bool>(false);
+                auto arg = std::make_shared<bool>(defval);
                 add_arg(arg, sh_opt, lg_opt, descr);
                 return arg;
             }

@@ -8,22 +8,22 @@
 extern "C" {
 #endif
 
-typedef struct word_list_s
-{
+typedef struct word_list_s {
     RefCtd;
-    char *fname;
+    char* fname;
     int fd;
     size_t flen;
-    void *map;
-    char **words;
+    void* map;
+    char** words;
     int n_words;
 } word_list_t;
 
-int wl_read_list(word_list_t *wl);
-int wl_map_file(word_list_t *wl);
-int wl_cleanup(word_list_t *wl);
+int wl_read_list(word_list_t* wl);
+int wl_map_file(word_list_t* wl);
+int wl_cleanup(word_list_t* wl);
 
-int wl_lookup(const word_list_t *wl, const char *word, int *pos, uint8_t *valid_bm);
+int wl_lookup(const word_list_t* wl, const char* word, int* pos,
+              uint8_t* valid_bm);
 
 #ifdef __cplusplus
 }
