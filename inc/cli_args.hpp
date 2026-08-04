@@ -190,6 +190,11 @@ namespace ArgParser
                 return TO_StrSP(ss.str());
             }
 
+            std::vector<str_p>& positional_args(void)
+            {
+                return n_args_;
+            }
+
             auto add_str(const char* sh_opt = "", const char* lg_opt = "",
                          const char* descr = "", const char* defval = "")
             {
