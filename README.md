@@ -4,9 +4,9 @@ A collection of library routines I written myself for my own use. C/C++ and Pyth
 Feel free to use. I am not responsible for the consequences.
 
 # Available Components
- * A simple logger
- * A simple CLI parser
- * Some queue and binary tree implementations in 'C', primarily for IoT platforms.
+ * A simple logger for `C` and `C++`. For `Go`, `maxbolgarin/logze` library is working just fine. `Python` has excellent logging built-in. `Rust` pending.
+ * A simple CLI parser for `C++`. Manual parsing for `C`. `Python` has excellent CLI arguments parser built in. `Go` and `Rust` pending.
+ * Some queue and binary tree implementations in 'C', primarily for IoT platforms. For `C++`, `Go` and `Python` got built-in primitives performing really well in most cases. `Rust` pending.
 
 # License
 GPL v2. All warranties disclaimed.
