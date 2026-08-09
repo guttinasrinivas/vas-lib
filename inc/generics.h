@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <errno.h>
 
 
@@ -50,7 +50,7 @@ typedef struct RefCtdObj_s {
 #define AssertMarker(invar) \
     if ((invar)->ref.marker != REF_CTR_MARKER) \
     { \
-        LOG_Printf(ERROR, "Missing marker for word_list_t *0x%lx! Aborting...", (uint64_t) (invar)); \
+        LOG_Printf(ERROR, "Missing marker for word_list_t *0x%llx! Aborting...", (uint64_t) (invar)); \
         cleanup_and_exit(EINVAL); \
     }
 

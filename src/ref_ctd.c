@@ -28,7 +28,7 @@ void ref_ct_dwn(RefCtdObj_t** bufp)
     /* This is a bit tricky.
      * The Ref Count maybe zero for a free'd block. */
     if ((*bufp)->ref.ct <= 0) {
-        LOG_Printf(ERROR, "Reference count for *0x%lx is less than 0",
+        LOG_Printf(ERROR, "Reference count for *0x%llx is less than 0",
                    (uint64_t) *bufp);
         exit(100);
     }
@@ -42,14 +42,14 @@ void ref_ct_dwn(RefCtdObj_t** bufp)
     if ((blen <= 0) ||
         (blen >= REF_CTR_MAX_MANAGED_LENG))
     {
-        LOG_Printf(ERROR, "Invalid buffer length %d for *0x%lx",
+        LOG_Printf(ERROR, "Invalid buffer length %d for *0x%llx",
                    (int) (*bufp)->ref.blen,
                    (uint64_t) *bufp);
         exit(101);
         return;
     }
 
-    LOG_Printf(DEBUG, "Freeing word_list_t *0x%lx", (uint64_t) *bufp);
+    LOG_Printf(DEBUG, "Freeing word_list_t *0x%llx", (uint64_t) *bufp);
     memset((void*)(*bufp), 0, (*bufp)->ref.blen);
     free((void*)(*bufp));
 

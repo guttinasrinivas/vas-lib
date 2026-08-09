@@ -4,9 +4,12 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_BUILD_TYPE Debug)
 
+if(NOT DEFINED ENV{VAS_LIB_HOME})
+    message(FATAL_ERROR "Please export VAS_LIB_HOME to the correct path")
+endif()
 
 project(vas-lib VERSION 1.0.0 LANGUAGES C CXX)
-link_directories(${HOME}/src/python/vproj/vas-lib/build)
+link_directories($ENV{VAS_LIB_HOME}/build)
 
 # Force modern C++ standard requirements
 set(CMAKE_CXX_STANDARD 17)
@@ -27,7 +30,11 @@ add_library(simple_logger STATIC src/SimpleLogger.cpp)
 target_include_directories(simple_logger PRIVATE src inc)
 
 add_executable(cli_args_test tests/cli_args_test.cpp)
+if(APPLE)
+    target_link_options(cli_args_test PRIVATE)
+else()
 target_link_options(cli_args_test PRIVATE -static)
+endif()
 target_include_directories(cli_args_test PRIVATE src inc)
 
 # Add the executable target (assumes your source code file is named main.cpp)
