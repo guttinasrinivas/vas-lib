@@ -1,0 +1,38 @@
+#ifndef __HASHED_LIST_H__
+#define __HASHED_LIST_H__
+
+#include "generics.h"
+#include "queue_impl.h"
+
+
+#define HASHED_LIST_LEVEL_SIZE  (16)
+
+typedef void* vl_hl_tbl_dir_t[HASHED_LIST_LEVEL_SIZE];
+typedef q_t vl_hl_tbl_page_t[HASHED_LIST_LEVEL_SIZE];
+
+typedef union vl_hl_hash_s
+{
+    struct
+    {
+        uint32_t lvl1: 4;
+        uint32_t lvl2: 4;
+        uint32_t lvl3: 8;
+    } b;
+
+    uint16_t w[2];
+    uint32_t dw0;
+} vl_hl_hash_t;
+
+
+typedef struct vl_hl_s 
+{
+    RefCtd;
+    vl_hl_tbl_dir_t lvl_1;
+} vl_hl_t;
+
+
+int vl_hl_init(vl_hl_t *inlist);
+int vl_hl_compute_hash(uint8_t *inbuf, size_t inlen, vl_hl_hash_t *ohash);
+
+#endif /* __HASHED_LIST_H__ */
+

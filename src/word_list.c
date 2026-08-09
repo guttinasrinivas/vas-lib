@@ -70,11 +70,27 @@ int wl_map_file(word_list_t* wl)
 
     wl->flen = sb.st_size;
 
+#ifdef USE_MMAP_DICT
     wl->map = (void*)mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE,
                           MAP_FILE | MAP_PRIVATE, wl->fd, 0);
     if (wl->map == MAP_FAILED) {
         return (ENOMEM);
     }
+#else /* USE_MMAP_DICT */
+    wl->map = malloc(sb.st_size);
+    if (wl->map == NULL) {
+        return (ENOMEM);
+    }
+
+    int readlen = 0;
+    while (readlen < sb.st_size) {
+        int brdlen = read(wl->fd, wl->map, sb.st_size);
+        if (brdlen < 0) {
+            return ENOMEM;
+        }
+        readlen += brdlen;
+    }
+#endif /* USE_MMAP_DICT */
 
     return (ret);
 }
@@ -102,13 +118,19 @@ int wl_lookup(const word_list_t* wl, const char* word, int* pos,
 {
     int ret = SUCCESS;
     int ii = 0;
+    int explen = strlen(word);
 
     for (ii = 0; ii < wl->n_words; ii++) {
         if (bit_val_at(valid_bm, ii) == 0) {
             continue;
         }
 
-        if (strcasecmp(word, wl->words[ii]) == 0) {
+        if (BUF_TO_DWORD(word, 0) == BUF_TO_DWORD(wl->words[ii], 0)) {
+            *pos = ii;
+            return (ret);
+        }
+
+        if (strncmp(word, wl->words[ii], explen) == 0) {
             //printf("Debug: %s == %s\n", word, wl->words[ii]);
             *pos = ii;
             return (ret);

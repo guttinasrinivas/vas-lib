@@ -20,7 +20,7 @@ find_package(Threads REQUIRED)
 add_library(c_queue_impl STATIC src/queue_impl.c)
 target_include_directories(c_queue_impl PRIVATE src inc)
 
-add_library(wl_impl STATIC src/word_list.c)
+add_library(wl_impl STATIC src/hashed_list.c src/word_list.c)
 target_include_directories(wl_impl PRIVATE src inc)
 
 add_library(simple_logger STATIC src/SimpleLogger.cpp)

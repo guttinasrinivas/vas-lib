@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vas-lib"
+version = "2026.08.09"
+dependencies = [
+  "pyserial",
+  "pylink-square",
+  "intelhex",
+  "pythoncrc",
+  "urllib3"
+]
+
+requires-python = ">=3.8"
+authors = [
+  {name = "Vasu (Srinivas Guttina)", email = "guttina.srinivas@gmail.com"},
+]
+maintainers = [
+  {name = "Vasu (Srinivas Guttina)", email = "guttina.srinivas@gmail.com"},
+]
+description = "Vasu's private routine collection. Open source."
+readme = "README.rst"
+license = "LicenseRef-Special-License"
+license-files = ["LICEN[CS]E.*"]
+keywords = ["vasu-lib"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+gui = ["PyQt5", "wxpython"]
+cli = [
+  "click",
+]
+
+[project.urls]
+#Homepage = "https://github.com/guttinasrinivas/vas-lib"
+#Documentation = ""
+Repository = "https://github.com/guttinasrinivas/vas-lib"
+"Bug Tracker" = "https://github.com/guttinasrinivas/vas-lib/issues"
+#Changelog = ""
+
+# [project.scripts]
+# spam-cli = "spam:main_cli"
+# 
+# [project.gui-scripts]
+# spam-gui = "spam:main_gui"
+# 
+# [project.entry-points."spam.magical"]
+# tomatoes = "spam:main_tomatoes"

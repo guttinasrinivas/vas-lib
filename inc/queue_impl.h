@@ -1,11 +1,13 @@
 #ifndef __QUEUE_IMPL_H__
 #define __QUEUE_IMPL_H__
+#include "generics.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 typedef struct q_node_s {
+    RefCtd;
     struct q_node_s* next;
     struct q_node_s* prev;
     struct q_node_s* parent;
@@ -15,6 +17,7 @@ typedef struct q_node_s {
 } q_node_t;
 
 typedef struct q_s {
+    RefCtd;
     struct q_node_s* head;
     struct q_node_s* tail;
     int len;

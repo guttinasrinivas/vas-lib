@@ -163,8 +163,7 @@ int q_init_node(q_node_t** n, void* data)
 {
     int ret = SUCCESS;
 
-    /* XXX Check malloc return. */
-    *n = malloc(sizeof(q_node_t));
+    *n = vl_alloc(sizeof(q_node_t));
     (*n)->data = data;
     (*n)->prev = NULL;
     (*n)->next = NULL;

@@ -1,6 +1,10 @@
 #ifndef __GENERICS_H__
 #define __GENERICS_H__
+
 #include <stdint.h>
+#include <string.h>
+#include <malloc.h>
+#include <errno.h>
 
 
 #ifdef __cplusplus
@@ -8,6 +12,8 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Constants */
+#define REF_CTR_MARKER              (0xa5a5a5a5)
+#define REF_CTR_MAX_MANAGED_LENG    (4 * 1024 * 1024)
 #define SUCCESS (0)
 
 /* Macros */
@@ -19,10 +25,17 @@ if (ret != SUCCESS) \
     return(ret); \
 }
 
+#define TO_DWORD(b0, b1, b2, b3) (((b3) << 24) | ((b2) << 16) | ((b1) << 8) | (b0))
+#define BUF_TO_DWORD(in_buf, ofst) TO_DWORD((in_buf[(ofst)]), \
+                                          (in_buf[(ofst) + 1]), \
+                                          (in_buf[(ofst) + 2]), \
+                                          (in_buf[(ofst) + 3]))
+
 
 typedef struct RefCtr_s {
     uint32_t marker;
     int ct;
+    size_t blen;
 } RefCtr_t;
 #define RefCtd  RefCtr_t ref
 
@@ -35,7 +48,7 @@ typedef struct RefCtdObj_s {
 /* Ideally, this should be a function. But, in C, a powerful macro preprocessing
  * mitigates the lack of reflections. Hence, a complex macro! */
 #define AssertMarker(invar) \
-    if ((invar)->ref.marker != 0xa5a5a5a5) \
+    if ((invar)->ref.marker != REF_CTR_MARKER) \
     { \
         LOG_Printf(ERROR, "Missing marker for word_list_t *0x%lx! Aborting...", (uint64_t) (invar)); \
         cleanup_and_exit(EINVAL); \
@@ -48,6 +61,8 @@ typedef struct RefCtdObj_s {
     invar->ref.ct++;
 
 
+void *vl_alloc(size_t inlen);
+void ref_ct_dwn(RefCtdObj_t** bufp);
 void cleanup_and_exit(int errcode);
 
 
