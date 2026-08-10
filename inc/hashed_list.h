@@ -7,8 +7,26 @@
 
 #define HASHED_LIST_LEVEL_SIZE  (16)
 
-typedef void* vl_hl_tbl_dir_t[HASHED_LIST_LEVEL_SIZE];
-typedef q_t vl_hl_tbl_page_t[HASHED_LIST_LEVEL_SIZE];
+typedef struct
+{
+    RefCtd;
+    void *data;
+    int dlen;
+    int idx;
+} vl_hl_entry_t;
+
+typedef struct
+{
+    RefCtd;
+    q_t* pages[HASHED_LIST_LEVEL_SIZE];
+} vl_hl_tbl_page_t;
+
+typedef struct
+{
+    RefCtd;
+    vl_hl_tbl_page_t* dirs[HASHED_LIST_LEVEL_SIZE];
+} vl_hl_tbl_dir_t;
+
 
 typedef union vl_hl_hash_s
 {
@@ -28,11 +46,16 @@ typedef struct vl_hl_s
 {
     RefCtd;
     vl_hl_tbl_dir_t lvl_1;
+    int ct;
 } vl_hl_t;
 
 
 int vl_hl_init(vl_hl_t *inlist);
 int vl_hl_compute_hash(uint8_t *inbuf, size_t inlen, vl_hl_hash_t *ohash);
+int vl_hl_insert(vl_hl_t *inlist, void *inbuf, size_t inlen);
+int vl_hl_lookup(vl_hl_t *inlist, void *inbuf, int inlen, int *idx);
+int vl_hl_print(vl_hl_t *inlist);
+int vl_hl_cleanup(vl_hl_t *inlist);
 
 #endif /* __HASHED_LIST_H__ */
 

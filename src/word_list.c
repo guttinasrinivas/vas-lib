@@ -11,6 +11,7 @@
 #include "generics.h"
 //#include "queue_impl.h"
 #include "word_list.h"
+#include "hashed_list.h"
 
 /*
  * TODO:
@@ -23,6 +24,11 @@ int wl_read_list(word_list_t* wl)
     int ii = 0;
     char* words = NULL;
     int tw = 0;
+    char *currword = NULL;
+
+    wl->hl = vl_alloc(sizeof(vl_hl_t));
+    ret = vl_hl_init(wl->hl);
+    ReturnOnError(ret);
 
     ret = wl_map_file(wl);
     ReturnOnError(ret);
@@ -44,11 +50,16 @@ int wl_read_list(word_list_t* wl)
     wl->words[0] = words;
     for (ii = 0; ii < (int)(wl->flen - 1); ii++) {
         if (words[ii] == '\0') {
-            wl->words[tw] = (words + ii + 1);
+            currword = (words + ii + 1);
+            wl->words[tw] = currword;
+            
+            vl_hl_insert(wl->hl, currword, strlen(currword));
             tw++;
         }
     }
 
+    printf("Total words loaded: %d\n", wl->n_words);
+    
     return (ret);
 }
 
@@ -100,7 +111,11 @@ int wl_cleanup(word_list_t* wl)
 {
     int ret = SUCCESS;
 
+#ifdef USE_MMAP_DICT
     ret = munmap(wl->map, wl->flen);
+#else /* USE_MMAP_DICT */
+    free(wl->map);
+#endif /* USE_MMAP_DICT */
     wl->flen = 0;
     wl->map = NULL;
     free(wl->words);
@@ -117,13 +132,15 @@ int wl_lookup(const word_list_t* wl, const char* word, int* pos,
               uint8_t* valid_bm)
 {
     int ret = SUCCESS;
-    int ii = 0;
     int explen = strlen(word);
+    *pos = -1;
 
-    for (ii = 0; ii < wl->n_words; ii++) {
+#ifdef SEQENTIAL_LOOK_UP
+    for (int ii = 0; ii < wl->n_words; ii++) {
         if (bit_val_at(valid_bm, ii) == 0) {
             continue;
         }
+
 
         if (BUF_TO_DWORD(word, 0) == BUF_TO_DWORD(wl->words[ii], 0)) {
             *pos = ii;
@@ -131,15 +148,21 @@ int wl_lookup(const word_list_t* wl, const char* word, int* pos,
         }
 
         if (strncmp(word, wl->words[ii], explen) == 0) {
-            //printf("Debug: %s == %s\n", word, wl->words[ii]);
             *pos = ii;
             return (ret);
         }
     }
+#else /* SEQUENTIAL_LOOK_UP */
+    ret = vl_hl_lookup(wl->hl, (void*) word, explen, pos);
+    ReturnOnError(ret);
 
-    *pos = -1;
-    ret = ENOENT;
-    return (ret);
+    if (bit_val_at(valid_bm, *pos) == 0) {
+        return ENOENT;
+    }
+
+#endif /* SEQUENTIAL_LOOK_UP */
+
+    return ret;
 }
 
 

@@ -17,6 +17,7 @@ extern "C" {
 #define SUCCESS (0)
 
 /* Macros */
+#define ReturnOnSuccess(ret)           if (ret == SUCCESS) return(ret);
 #define ReturnOnError(ret)             if (ret != SUCCESS) return(ret);
 #define RetOnErrorWithLog(ret, ...) \
 if (ret != SUCCESS) \

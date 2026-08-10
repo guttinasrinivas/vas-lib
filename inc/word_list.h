@@ -3,10 +3,12 @@
 #include <stdint.h>
 #include <memory.h>
 #include "generics.h"
+#include "hashed_list.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 typedef struct word_list_s {
     RefCtd;
@@ -16,6 +18,7 @@ typedef struct word_list_s {
     void* map;
     char** words;
     int n_words;
+    vl_hl_t *hl;
 } word_list_t;
 
 int wl_read_list(word_list_t* wl);
