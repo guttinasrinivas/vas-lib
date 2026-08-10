@@ -32,7 +32,7 @@ int q_append(q_t *q, q_node_t* node)
         node->next = NULL;
         node->prev = NULL;
         node->q = (void*) q;
-        q->tail = node;
+        q->head = node;
         q->tail = node;
         q->len = 1;
         return SUCCESS;
@@ -163,8 +163,7 @@ int q_init_node(q_node_t** n, void* data)
 {
     int ret = SUCCESS;
 
-    /* XXX Check malloc return. */
-    *n = malloc(sizeof(q_node_t));
+    *n = vl_alloc(sizeof(q_node_t));
     (*n)->data = data;
     (*n)->prev = NULL;
     (*n)->next = NULL;
@@ -186,6 +185,34 @@ int q_free_node(q_node_t** n)
     *n = NULL;
 
     return (ret);
+}
+
+int q_find_node(q_t *q, void *inbuf, int inlen, q_node_t** onode)
+{
+    int ii = 0;
+    int ret = ENOENT;
+    q_node_t* node = NULL;
+    *onode = NULL;
+
+    if (q == NULL) {
+        return ENOENT;
+    }
+
+    node = q->head;
+    for (ii = 0; ii < q->len; ii++) {
+        ret = memcmp(node->data, inbuf, inlen);
+        if (ret == 0) {
+            *onode = node;
+            return SUCCESS;
+        }
+
+        if (node->next == NULL) {
+            break;
+        }
+        node = node->next;
+    }
+
+    return ret;
 }
 
 static void q_debug_print(q_t *q)
