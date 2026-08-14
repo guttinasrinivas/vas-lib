@@ -18,7 +18,7 @@ typedef struct word_list_s {
     void* map;
     char** words;
     int n_words;
-    vl_hl_t *hl;
+    vl_hl_t* hl;
 } word_list_t;
 
 int wl_read_list(word_list_t* wl);

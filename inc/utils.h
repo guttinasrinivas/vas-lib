@@ -5,8 +5,10 @@
 #include <string>
 #include <vector>
 
-namespace vas_lib {
-    namespace utils {
+namespace vas_lib
+{
+    namespace utils
+    {
         typedef std::shared_ptr<std::string> str_p;
         typedef std::shared_ptr<int> int_p;
 
