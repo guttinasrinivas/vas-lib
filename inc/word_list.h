@@ -16,6 +16,7 @@ typedef struct word_list_s {
     int fd;
     size_t flen;
     void* map;
+    char* filters;
     char** words;
     int n_words;
     vl_hl_t *hl;
@@ -27,6 +28,7 @@ int wl_cleanup(word_list_t* wl);
 
 int wl_lookup(const word_list_t* wl, const char* word, int* pos,
               uint8_t* valid_bm);
+int wl_remove(const word_list_t* wl, int pos);
 
 #ifdef __cplusplus
 }

@@ -166,5 +166,21 @@ int wl_lookup(const word_list_t* wl, const char* word, int* pos,
 }
 
 
+int wl_remove(const word_list_t* wl, int pos)
+{
+    int ret = SUCCESS;
+    char* word = NULL;
+
+    if ((pos < 0) ||
+            (pos >= wl->n_words)) {
+        return (EINVAL);
+    }
+
+    word = wl->words[pos];
+    word[0] = '\0';
+
+    return (ret);
+}
+
 /* End of file */
 

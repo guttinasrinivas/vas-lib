@@ -19,9 +19,12 @@
 #define LOG_Printf(lvl, ...)    if (lvl <= LOG_CurrLevel) print_time(); \
     printf("- %s %s - ", __FILE_NAME__, __func__); \
     printf(__VA_ARGS__); printf("\n")
+#define LOG_Debug(...) LOG_Printf(DEBUG, __VA_ARGS__)
+#define LOG_Info(...)  LOG_Printf(INFO, __VA_ARGS__)
+#define LOG_Warning(...) LOG_Printf(WARNING, __VA_ARGS__)
+#define LOG_Error(...) LOG_Printf(ERROR, __VA_ARGS__)
+#define LOG_Critical(...) LOG_Printf(CRITICAL, __VA_ARGS__)
 #define E_Printf(...)            LOG_Printf(ERROR, __VA_ARGS__)
-
-
 
 
 static void print_time(void)

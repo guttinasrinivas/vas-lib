@@ -11,6 +11,15 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Error codes */
+enum {
+    SUCCESS = (0),
+    E_ARGS = (1),
+    E_NOTSUP = (2),
+    E_NOTFOUND = (3)
+};
+
+
 /* Constants */
 #define REF_CTR_MARKER              (0xa5a5a5a5)
 #define REF_CTR_MAX_MANAGED_LENG    (4 * 1024 * 1024)
