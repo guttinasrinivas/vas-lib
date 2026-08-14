@@ -24,7 +24,7 @@ int wl_read_list(word_list_t* wl)
     int ii = 0;
     char* words = NULL;
     int tw = 0;
-    char *currword = NULL;
+    char* currword = NULL;
 
     wl->hl = vl_alloc(sizeof(vl_hl_t));
     ret = vl_hl_init(wl->hl);
@@ -52,14 +52,14 @@ int wl_read_list(word_list_t* wl)
         if (words[ii] == '\0') {
             currword = (words + ii + 1);
             wl->words[tw] = currword;
-            
+
             vl_hl_insert(wl->hl, currword, strlen(currword));
             tw++;
         }
     }
 
     printf("Total words loaded: %d\n", wl->n_words);
-    
+
     return (ret);
 }
 

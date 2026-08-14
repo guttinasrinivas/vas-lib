@@ -187,7 +187,7 @@ int q_free_node(q_node_t** n)
     return (ret);
 }
 
-int q_find_node(q_t *q, void *inbuf, int inlen, q_node_t** onode)
+int q_find_node(q_t *q, void* inbuf, int inlen, q_node_t** onode)
 {
     int ii = 0;
     int ret = ENOENT;

@@ -32,7 +32,7 @@ int q_init(q_t *q);
 int q_append(q_t *q, q_node_t* node);
 int q_insert(q_t *q, q_node_t* at, q_node_t* node);
 int q_delete(q_t *q, q_node_t* node);
-int q_find_node(q_t *q, void *inbuf, int inlen, q_node_t** onode);
+int q_find_node(q_t *q, void* inbuf, int inlen, q_node_t** onode);
 
 int q_fifo_in(q_t *q, q_node_t* node);
 int q_fifo_out(q_t *q, q_node_t** node);

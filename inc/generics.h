@@ -71,7 +71,7 @@ typedef struct RefCtdObj_s {
     invar->ref.ct++;
 
 
-void *vl_alloc(size_t inlen);
+void* vl_alloc(size_t inlen);
 void ref_ct_dwn(RefCtdObj_t** bufp);
 void cleanup_and_exit(int errcode);
 

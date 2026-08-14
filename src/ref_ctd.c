@@ -3,16 +3,16 @@
 #include "simple_logger.h"
 
 
-inline __attribute__((always_inline)) void *vl_alloc(size_t inlen)
+inline __attribute__((always_inline)) void* vl_alloc(size_t inlen)
 {
-    void *obuf = malloc(inlen);
+    void* obuf = malloc(inlen);
     if (obuf == NULL) {
         return NULL;
     }
 
     memset(obuf, 0, inlen);
-    ((RefCtdObj_t *) obuf)->ref.marker = REF_CTR_MARKER;
-    ((RefCtdObj_t *) obuf)->ref.blen = inlen;
+    ((RefCtdObj_t*) obuf)->ref.marker = REF_CTR_MARKER;
+    ((RefCtdObj_t*) obuf)->ref.blen = inlen;
 
     return obuf;
 }
@@ -38,12 +38,11 @@ void ref_ct_dwn(RefCtdObj_t** bufp)
         return;
     }
 
-    blen = (int) (*bufp)->ref.blen;
+    blen = (int)(*bufp)->ref.blen;
     if ((blen <= 0) ||
-        (blen >= REF_CTR_MAX_MANAGED_LENG))
-    {
+            (blen >= REF_CTR_MAX_MANAGED_LENG)) {
         LOG_Printf(ERROR, "Invalid buffer length %d for *0x%llx",
-                   (int) (*bufp)->ref.blen,
+                   (int)(*bufp)->ref.blen,
                    (uint64_t) *bufp);
         exit(101);
         return;
