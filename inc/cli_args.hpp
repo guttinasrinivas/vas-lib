@@ -296,7 +296,6 @@ namespace ArgParser
                 /* This is value arg, use value */
                 auto inarg = TO_StrSP(av_[idx_]);
                 auto val_ofst = inarg->find('=');
-                auto max_ofst = inarg->size() - 1;
                 auto val_len = inarg->size();
                 CLI_Arg_p parser;
 
